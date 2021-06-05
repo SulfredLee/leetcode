@@ -8,7 +8,7 @@
 - [如何貢獻代碼](#如何貢獻代碼)
 
 ## PDF下載
-[LeetCode題解(C++版).pdf](https://github.com/SulfredLee/leetcode/blob/temp/C%2B%2B/leetcode-cpp.pdf)
+[LeetCode題解(C++版).pdf](https://github.com/SulfredLee/leetcode/blob/master/C%2B%2B/leetcode-cpp.pdf)
 
 C++ 文件夾下是C++版，內容一模一樣，代碼是用C++寫的。
 
