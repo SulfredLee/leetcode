@@ -349,3 +349,137 @@ FROM Employee AS a JOIN Employee AS b
      AND a.Salary > b.Salary
 ;
 \end{Code}
+
+\section{Duplicate Emails} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:duplicate-emails}
+
+
+\subsubsection{描述}
+SQL Schema
+
+\begin{Code}
+Create table If Not Exists Person (Id int, Email varchar(255))
+Truncate table Person
+insert into Person (Id, Email) values ('1', 'a@b.com')
+insert into Person (Id, Email) values ('2', 'c@d.com')
+insert into Person (Id, Email) values ('3', 'a@b.com')
+\end{Code}
+
+Write a SQL query to find all duplicate emails in a table named Person.
+
+Table: Person
+\begin{Code}
++----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+\end{Code}
+
+For example, your query should return the following for the above table:
+
+\begin{Code}
++---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+\end{Code}
+
+
+\subsubsection{Using GROUP BY and a temporary table}
+\begin{Code}
+select Email from
+(
+  select Email, count(Email) as num
+  from Person
+  group by Email
+) as statistic
+where num > 1
+;
+\end{Code}
+
+\subsubsection{Using GROUP BY and HAVING condition}
+\begin{Code}
+select Email
+from Person
+group by Email
+having count(Email) > 1;
+\end{Code}
+
+\section{Customers Who Never Order} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:customers-who-never-order}
+
+
+\subsubsection{描述}
+SQL Schema
+
+\begin{Code}
+Create table If Not Exists Customers (Id int, Name varchar(255))
+Create table If Not Exists Orders (Id int, CustomerId int)
+Truncate table Customers
+insert into Customers (Id, Name) values ('1', 'Joe')
+insert into Customers (Id, Name) values ('2', 'Henry')
+insert into Customers (Id, Name) values ('3', 'Sam')
+insert into Customers (Id, Name) values ('4', 'Max')
+Truncate table Orders
+insert into Orders (Id, CustomerId) values ('1', '3')
+insert into Orders (Id, CustomerId) values ('2', '1')
+\end{Code}
+
+Suppose that a website contains two tables, the Customers table and the Orders table. Write a SQL query to find all customers who never order anything.
+
+Table: Customers.
+\begin{Code}
++----+-------+
+| Id | Name  |
++----+-------+
+| 1  | Joe   |
+| 2  | Henry |
+| 3  | Sam   |
+| 4  | Max   |
++----+-------+
+\end{Code}
+
+Table: Orders.
+
+\begin{Code}
++----+------------+
+| Id | CustomerId |
++----+------------+
+| 1  | 3          |
+| 2  | 1          |
++----+------------+
+\end{Code}
+
+Using the above tables as example, return the following:
+
+\begin{Code}
++-----------+
+| Customers |
++-----------+
+| Henry     |
+| Max       |
++-----------+
+\end{Code}
+
+\subsubsection{Not In}
+\begin{Code}
+select customers.name as 'Customers'
+from customers
+where customers.id not in
+(
+    select customerid from orders
+);
+\end{Code}
+
+\subsubsection{Left Join}
+\begin{Code}
+SELECT Name AS 'Customers'
+FROM Customers c
+LEFT JOIN Orders o
+ON c.Id = o.CustomerId
+WHERE o.CustomerId IS NULL;
+\end{Code}
