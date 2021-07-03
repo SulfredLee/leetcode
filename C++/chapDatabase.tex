@@ -699,3 +699,135 @@ FROM   (SELECT e.*,
          ON a. departmentid = d. id
 WHERE  deptpayrank <= 3; 
 \end{Code}
+
+\section{Delete Duplicate Emails} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:delete-duplicate-emails}
+
+
+\subsubsection{描述}
+SQL Schema
+
+\begin{Code}
+Truncate table Person
+insert into Person (Id, Email) values ('1', 'john@example.com')
+insert into Person (Id, Email) values ('2', 'bob@example.com')
+insert into Person (Id, Email) values ('3', 'john@example.com')
+\end{Code}
+
+Write a SQL query to delete all duplicate email entries in a table named Person, keeping only unique emails based on its smallest Id.
+
+\begin{Code}
++----+------------------+
+| Id | Email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
+| 3  | john@example.com |
++----+------------------+
+Id is the primary key column for this table.
+\end{Code}
+
+For example, after running your query, the above Person table should have the following rows:
+\begin{Code}
++----+------------------+
+| Id | Email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
++----+------------------+
+\end{Code}
+
+Note:
+
+Your output is the whole Person table after executing your sql. Use delete statement.
+
+\subsubsection{Delete, Where}
+\begin{Code}
+DELETE p1 FROM Person p1,
+    Person p2
+WHERE
+    p1.Email = p2.Email AND p1.Id > p2.Id;
+\end{Code}
+
+\section{Rising Temperature} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:rising-temperature}
+
+
+\subsubsection{描述}
+SQL Schema
+
+\begin{Code}
+Create table If Not Exists Weather (Id int, RecordDate date, Temperature int)
+Truncate table Weather
+insert into Weather (Id, RecordDate, Temperature) values ('1', '2015-01-01', '10')
+insert into Weather (Id, RecordDate, Temperature) values ('2', '2015-01-02', '25')
+insert into Weather (Id, RecordDate, Temperature) values ('3', '2015-01-03', '20')
+insert into Weather (Id, RecordDate, Temperature) values ('4', '2015-01-04', '30')
+\end{Code}
+
+Table: Weather
+
+\begin{Code}
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id is the primary key for this table.
+This table contains information about the temperature in a certain day.
+\end{Code}
+
+Write an SQL query to find all dates' id with higher temperature compared to its previous dates (yesterday).
+
+Return the result table in any order.
+
+The query result format is in the following example:
+\begin{Code}
+Weather
++----+------------+-------------+
+| id | recordDate | Temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+
+Result table:
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+In 2015-01-02, temperature was higher than the previous day (10 -> 25).
+In 2015-01-04, temperature was higher than the previous day (20 -> 30).
+\end{Code}
+
+
+\subsubsection{Join, Datediff}
+\begin{Code}
+SELECT
+    weather.id AS 'Id'
+FROM
+    weather
+        JOIN
+    weather w ON DATEDIFF(weather.recordDate, w.recordDate) = 1
+        AND weather.Temperature > w.Temperature
+;
+\end{Code}
+
+\subsubsection{Join, Subdate}
+\begin{Code}
+select
+    w1.id
+from
+    Weather w1
+join
+    Weather w2
+on
+    subdate(w1.recordDate, 1) = w2.recordDate
+    and w1.Temperature > w2.Temperature;
+\end{Code}
