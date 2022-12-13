@@ -41,7 +41,7 @@ Java 文件夾下是Java版，目前正在編寫中，由於拖延症，不知�
 ## 在Ubuntu 20.04 下編譯
 - install package
 ```Bash
-$ sudo apt-get install texmarker texlive-lang-chinese texlive-luatex texlive-xetex ttf-mscorefonts-installer font-manager
+$ sudo apt-get install texmaker texlive-lang-chinese texlive-luatex texlive-xetex ttf-mscorefonts-installer font-manager
 ```
 - download needed font from [fonts market](https://www.fontsmarket.com)
   - AdobeFangsongStd-Regular.otf
