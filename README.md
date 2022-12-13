@@ -44,11 +44,11 @@ Java 文件夾下是Java版，目前正在編寫中，由於拖延症，不知�
 $ sudo apt-get install texmaker texlive-lang-chinese texlive-luatex texlive-xetex ttf-mscorefonts-installer font-manager
 ```
 - download needed font from [fonts market](https://www.fontsmarket.com)
-  - AdobeFangsongStd-Regular.otf
-  - AdobeHeitiStd-Regular.otf
-  - AdobeKaitiStd-Regular.otf
-  - AdobeSongStd-Light.otf
-  - Sans Narrow.ttf
+  - AdobeFangsongStd-Regular.otf - [Adobe Fangsong Std R](https://www.fontsmarket.com/font-download/adobe-fangsong-std-r)
+  - AdobeHeitiStd-Regular.otf - [Adobe Heiti Std R](https://www.fontsmarket.com/font-download/adobe-heiti-std-r)
+  - AdobeKaitiStd-Regular.otf - [Adobe Kaiti Std R](https://www.fontsmarket.com/font-download/adobe-kaiti-std-r)
+  - AdobeSongStd-Light.otf - [Adobe Song Std L](https://www.fontsmarket.com/font-download/adobe-song-std-l)
+  - Sans Narrow.ttf - [Sans Narrow](https://www.fontsmarket.com/font-download/sans-narrow)
 - install font through font-manager
 - Use LuaLaTex to compile
 
