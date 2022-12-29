@@ -105,3 +105,24 @@ auto Compare = [](const auto& first, const auto& second)
 priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(Compare)>
                   pq(Compare);
 \end{Code}
+
+\subsubsection{Use unordered_map with pair}
+
+\begin{Code}
+namespace std
+{
+    template <>
+        struct hash<pair<int, int>>
+        {
+            size_t operator()(pair<int, int> const& p) const
+            {
+                return ((size_t)&(p.first) ^ (size_t)&(p.second));
+            }
+        };
+}
+
+class Solution {
+private:
+    unordered_set<pair<int, int>> m_example;
+}
+\end{Code}
