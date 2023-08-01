@@ -126,7 +126,7 @@ Nil
 
 \subsubsection{分治法}
 \begin{Code}
-// 時間複雜度O(nlogn)，空間複雜度O(n)
+// 時間複雜度O(n)，空間複雜度O(n)
 class Solution {
 public:
     vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
@@ -228,3 +228,62 @@ private:
 };
 \end{Code}
 
+
+\subsubsection{hashmap}
+\begin{Code}
+  // 時間複雜度O(n)，空間複雜度O(n)
+class Solution
+{
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings)
+    {
+        // get last x position
+        int last_x = Get_Last_X(buildings);
+        // create hash map wiht an array
+        vector<int> skyline_outline(last_x + 1, 0);
+
+        // get skyline outline structure
+        for (const vector<int>& building: buildings)
+        {
+            for (int j = building[0]; j <= building[1]; j++)
+            {
+                int y = building[2];
+                if (y > skyline_outline[j])
+                    // get the highest y
+                    skyline_outline[j] = y;
+            }
+        }
+
+        // get result
+        vector<vector<int>> skyline_result;
+        int cur_y = 0;
+        for (size_t x = 0; x < skyline_outline.size(); x++)
+        {
+            if (skyline_outline[x] > cur_y)
+            {
+                cur_y = skyline_outline[x];
+                skyline_result.push_back({x, cur_y});
+            }
+            else if (skyline_outline[x] < cur_y)
+            {
+                cur_y = skyline_outline[x];
+                skyline_result.push_back({x - 1, cur_y});
+            }
+        }
+
+        return skyline_result;
+    }
+private:
+    int Get_Last_X(const vector<vector<int>>& buildings)
+    {
+        int last_x = INT_MIN;
+        for (const vector<int>& building : buildings)
+        {
+            if (building[1] > last_x)
+                last_x = building[1];
+        }
+
+        return last_x;
+    }
+};
+\end{Code}
