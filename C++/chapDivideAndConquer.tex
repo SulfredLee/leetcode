@@ -126,7 +126,7 @@ Nil
 
 \subsubsection{分治法}
 \begin{Code}
-// 時間複雜度O(n)，空間複雜度O(n)
+// 時間複雜度O(nlogn)，空間複雜度O(n)
 class Solution {
 public:
     vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
@@ -231,7 +231,8 @@ private:
 
 \subsubsection{hashmap}
 \begin{Code}
-  // 時間複雜度O(n)，空間複雜度O(n)
+  // 時間複雜度O(timeout)，空間複雜度O(n)
+  // time will base on the width of buildings where O(n) n is the number of buildings
 class Solution
 {
 public:
@@ -262,13 +263,17 @@ public:
             if (skyline_outline[x] > cur_y)
             {
                 cur_y = skyline_outline[x];
-                skyline_result.push_back({x, cur_y});
+                skyline_result.push_back({(int)x, cur_y});
             }
             else if (skyline_outline[x] < cur_y)
             {
                 cur_y = skyline_outline[x];
-                skyline_result.push_back({x - 1, cur_y});
+                skyline_result.push_back({(int)(x - 1), cur_y});
             }
+        }
+        if (cur_y != 0)
+        {
+            skyline_result.push_back({(int)(skyline_outline.size() - 1), 0});
         }
 
         return skyline_result;
