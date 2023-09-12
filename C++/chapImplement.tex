@@ -1670,3 +1670,214 @@ public:
     }
 };
 \end{Code}
+
+\section{Interval Map}
+\label{sec:interval-map}
+
+\subsection{描述}
+This question comes from \href{https://stackoverflow.com/q/54068482/2358836}{stack overflow}
+
+\textbf{interval_map<K,V>} is a data structure that efficiently associates intervals of keys of type K with values of type V. Your task is to implement the assign member function of this data structure, which is outlined below.
+
+\textbf{interval_map<K, V>} is implemented on top of \textbf{std::map}. In case you are not entirely sure which functions \textbf{std::map} provides, what they do and which guarantees they provide, we provide an excerpt of the C++ standard here. (at the end)
+
+Each key-value-pair (k,v) in the \textbf{std::map} means that the value v is associated with the interval from k (including) to the next key (excluding) in the \textbf{std::map}.
+
+Example: the \textbf{std::map (0,'A'), (3,'B'), (5,'A')} represents the mapping
+
+\begin{Code}
+    0 -> 'A'
+    1 -> 'A'
+    2 -> 'A'
+    3 -> 'B'
+    4 -> 'B'
+    5 -> 'A'
+    6 -> 'A'
+    7 -> 'A'
+\end{Code}
+
+... all the way to \textbf{numeric_limits<int>::max()}
+
+The representation in the \textbf{std::map} must be canonical, that is, consecutive map entries must not have the same value: \textbf{..., (0,'A'), (3,'A'), ...} is not allowed. Initially, the whole range of K is associated with a given initial value, passed to the constructor of the interval_map data structure.
+
+
+Key type --- K
+
+        besides being copyable and assignable, is less-than comparable via operator<
+        is bounded below, with the lowest value being std::numeric_limits::lowest()
+        does not implement any other operations, in particular no equality comparison or arithmetic operators
+
+Value type --- V
+
+        besides being copyable and assignable, is equality-comparable via operator==
+        does not implement any other operations
+
+
+\subsection{分析}
+The first attempt I did was list out all the possible cases for the interval insertion. This is a top to bottom approach. The cases are included but not limited to:
+
+\begin{Code}
+for c_1 in ["new intervale is bigger / equal / smaller than the entire group of intervals in the map"]:
+    for c_2 in ["c_1 is before / one leg overlap / two legs overlap / after the group of intervals in the map"]:
+        for c_3 in ["is the new interval touch the boundary?"]:
+\end{Code}
+
+The cases are already more than 60. This approach is not workable. The following graph shows some cases.
+
+\begin{center}
+\includegraphics[width=150pt]{interval-map-cases.png}\\
+\figcaption{Interval map cases}\label{fig:interval-map-cases}
+\end{center}
+
+From the experience of the first attempt. I am looking for an implementation that can handle all the cases. The cases from the above diagram \textbf{interval full overlap} we can handle all the cases by one implementation. With the observation, I create a dummy interval for the leading and tailing interval and trun the entire problem into 1 case only and that is the \textbf{interval full overlap} case.
+
+\begin{center}
+\includegraphics[width=150pt]{interval-map-one-case.png}\\
+\figcaption{Interval map cases}\label{fig:interval-map-one-case}
+\end{center}
+
+Then I separate the handling of the interval begin and end, so that I can reduce the complexity of the status checking including the key value overlaping, and the begin value checking.
+
+
+\subsection{代碼}
+\begin{Code}
+// stack overflow
+// 時間複雜度O()，空間複雜度O()
+class Solution {
+public:
+
+};
+
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+#include <tuple>
+#include <algorithm>
+#include <cassert>
+
+template<typename K, typename V>
+class block_map {
+    friend void BlockMapTest();
+    V m_valBegin;
+    std::map<K,V> m_map;
+public:
+    block_map(V const& val)
+        : m_valBegin(val)
+    {}
+
+    void print() const
+    {
+        for (const auto &[k, v] : m_map)
+        {
+            std::cout << k << " " << v << std::endl;
+        }
+    }
+
+    // Assign value val to block [keyBegin, keyEnd)
+    void assign( K const& keyBegin, K const& keyEnd, V const& val ) {
+        if (!(keyBegin < keyEnd)) return; // return if empty block
+
+        // initial for empty map
+        if (m_map.size() == 0)
+        {
+            const auto it = m_map.insert(m_map.begin(), {keyBegin, val});
+            m_map.insert(it, {keyEnd, m_valBegin});
+            return;
+        }
+
+        // handle all interval related information for keyBegin
+        // keyBegin use upper_bound - 1 to get current interval val
+        // due to the definition of the interval val [start, end)
+        auto next_begin_it = m_map.upper_bound(keyBegin);
+        auto cur_begin_it = next_begin_it == m_map.begin()\
+                            ? m_map.begin() : std::prev(next_begin_it);
+        bool is_begin_key_equal = next_begin_it != m_map.begin()\
+                                   && !(cur_begin_it->first < keyBegin)\
+                                    ? true : false;
+        V cur_begin_val = next_begin_it == m_map.begin()\
+                           ? m_valBegin : cur_begin_it->second;
+        auto prev_begin_it = cur_begin_it == m_map.begin()\
+                              ? m_map.begin() : std::prev(cur_begin_it);
+        V prev_begin_val = cur_begin_it == m_map.begin()\
+                            ? m_valBegin : prev_begin_it->second;
+
+        // handle all interval related information for keyEnd
+        // keyBegin use lower_bound - 1 to get current interval val
+        // due to the definition of the interval val [start, end)
+        auto next_end_it = m_map.lower_bound(keyEnd);
+        bool is_end_key_equal = next_end_it == m_map.end()\
+                                 ? false : !(keyEnd < next_end_it->first);
+        V cur_end_val = next_end_it == m_map.begin()\
+                         ? m_valBegin : std::prev(next_end_it)-> second;
+
+        // erase [begin current block, next end block)
+        auto erase_end_it = is_end_key_equal && val == cur_end_val\
+                             ? std::next(next_end_it) : next_end_it;
+        auto erase_begin_it = is_begin_key_equal\
+                               ? cur_begin_it : next_begin_it;
+        auto erase_it = m_map.erase(erase_begin_it, erase_end_it);
+
+        // insert back
+        auto insert_it = erase_it;
+        if ((!is_begin_key_equal && val != cur_begin_val)\
+             || (is_begin_key_equal && prev_begin_val != val))
+        {
+            insert_it = m_map.insert(insert_it, {keyBegin, val});
+            insert_it++;
+        }
+        if (val != cur_end_val && !is_end_key_equal)
+        {
+            insert_it = m_map.insert(insert_it, {keyEnd, cur_end_val});
+        }
+    }
+
+    V const& operator[]( K const& key ) const {
+        auto it=m_map.upper_bound(key);
+        if(it==m_map.begin()) {
+            return m_valBegin;
+        } else {
+            return (--it)->second;
+        }
+    }
+};
+
+struct TestKeyType
+{
+    unsigned int val;
+    constexpr TestKeyType(unsigned int val) : val(val) {}
+    constexpr bool operator<(const TestKeyType& other) const { return val < other.val; }
+};
+
+namespace std {
+    template<> class numeric_limits<TestKeyType> {
+    public:
+        static constexpr TestKeyType lowest()\
+         { return TestKeyType(numeric_limits<unsigned int>::lowest()); }
+        //static constexpr TestKeyType lowest() { return TestKeyType(-250); }
+    };
+}
+
+using TestValueType = char;
+
+struct TestFloatKeyType
+{
+    float val;
+
+    TestFloatKeyType() = default;
+
+    TestFloatKeyType(float val) : val(val) {}
+    bool operator< (TestFloatKeyType other) const
+    {
+        return other.val - val > 1.e-4f;
+    }
+};
+
+namespace std {
+    template<> class numeric_limits<TestFloatKeyType> {
+    public:
+        static TestFloatKeyType lowest()\
+         { return TestFloatKeyType(numeric_limits<float>::lowest()); }
+    };
+}
+\end{Code}
