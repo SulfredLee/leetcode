@@ -1808,11 +1808,13 @@ public:
         auto next_end_it = m_map.lower_bound(keyEnd);
         bool is_end_key_equal = next_end_it == m_map.end()\
                                  ? false : !(keyEnd < next_end_it->first);
+        V next_end_val = next_end_it == m_map.end()\
+                          ? m_valBegin : next_end_it->second;        
         V cur_end_val = next_end_it == m_map.begin()\
                          ? m_valBegin : std::prev(next_end_it)-> second;
 
         // erase [begin current block, next end block)
-        auto erase_end_it = is_end_key_equal && val == cur_end_val\
+        auto erase_end_it = is_end_key_equal && val == next_end_val\
                              ? std::next(next_end_it) : next_end_it;
         auto erase_begin_it = is_begin_key_equal\
                                ? cur_begin_it : next_begin_it;
@@ -1880,4 +1882,177 @@ namespace std {
          { return TestFloatKeyType(numeric_limits<float>::lowest()); }
     };
 }
+\end{Code}
+
+
+\section{Interval Map Random Test Case}
+\label{sec:interval-map-random-test-case}
+
+\subsection{描述}
+Please create a random test case generator for the interval map.
+
+
+\subsection{分析}
+There are 2 parts. We will have the first random funtion to generate an expected output. Then base on that output, we will generate a valid input.
+
+For the second random function, we will treat the block as a layer. Due to the assignment sequence, the later the block we assign, the range requirement will be tighter.
+
+\begin{center}
+\includegraphics[width=150pt]{interval-map-test-cases.png}\\
+\figcaption{Interval map test cases}\label{fig:interval-map-test-cases}
+\end{center}
+
+The first random function will generate the expected output in the left handside of the above diagram. In the middle, the second random function will generate a valid input based on a valid output. Finally, we should get a result similar to the right hand side diagram.
+
+\subsection{代碼}
+\begin{Code}
+// stack overflow
+// 時間複雜度O()，空間複雜度O()
+class Solution {
+public:
+
+};
+
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+#include <tuple>
+#include <algorithm>
+#include <cassert>
+
+std::vector<std::pair<int, char>>
+Generate_Random_Outputs(int num_of_inputs
+                        , int begin_key
+                        , int end_key
+                        , const char &begin_val
+                        , const char &end_val)
+{
+    std::random_device r;
+    std::default_random_engine el(r());
+    std::uniform_int_distribution<int> ran_key(begin_key, end_key);
+    std::uniform_int_distribution<char> ran_val(begin_val, end_val);
+
+    // first input
+    std::set<int> first_input;
+    while (first_input.size() <= (size_t)num_of_inputs) // extra number for block ending
+    {
+        first_input.insert(ran_key(el));
+    }
+    // final_output
+    std::vector<std::pair<int, char>> final_output;
+    char last_val = begin_val;
+    for (const auto &key : first_input)
+    {
+        char cur_val = ran_val(el);
+        while (cur_val == last_val)
+            cur_val = ran_val(el);
+
+        // confirm a different value generated
+        final_output.push_back({key, cur_val});
+        last_val = cur_val;
+    }
+    final_output.back().second = begin_val;
+    return final_output;
+}
+
+std::vector<std::tuple<int, int, char>>
+Generate_Random_Input(const std::vector<std::pair<int, char>>& expected_output)
+{
+    std::set<int> seen;
+    std::vector<std::tuple<int, int, char>> random_input;
+
+    std::random_device r;
+    std::default_random_engine el(r());
+    std::uniform_int_distribution<size_t> ran_idx(0, expected_output.size()-2);
+    while (seen.size() < expected_output.size() - 1)
+    {
+        size_t cur_idx = ran_idx(el);
+        while (seen.count(cur_idx))
+            cur_idx = ran_idx(el);
+
+        auto next_level_it = seen.lower_bound(cur_idx);
+        auto prev_level_it = next_level_it == seen.begin()\
+                              ? seen.begin() : std::prev(next_level_it);
+        // handle begin
+        int rand_begin_start = next_level_it == seen.begin()\
+                                ? expected_output[cur_idx].first\
+                                 : expected_output[(*prev_level_it) + 1].first;
+        int rand_begin_end = expected_output[cur_idx].first;
+
+        // handle end
+        int rand_end_start = expected_output[cur_idx + 1].first;
+        int rand_end_end = next_level_it == seen.end()\
+                            ? expected_output.back().first\
+                             : expected_output[*next_level_it].first;
+
+        // generate random
+        std::uniform_int_distribution<int> ran_begin(rand_begin_start, rand_begin_end);
+        std::uniform_int_distribution<int> ran_end(rand_end_start, rand_end_end);
+        random_input.push_back({ran_begin(el)\
+                                , ran_end(el)\
+                                , expected_output[cur_idx].second});
+
+        // update seen
+        seen.insert(cur_idx);
+    }
+
+    return random_input;
+}
+
+void Demo_Block_Map()
+{
+    std::cout << "Start Demo_Block_Map" << std::endl;
+
+    bool is_found_error = false;
+    std::vector<std::pair<int, char>> random_output;
+    while (!is_found_error)
+    {
+        random_output = Generate_Random_Outputs(500, 1, 300000, 'A', 'Z');
+
+        std::cout << "Expected output:" << std::endl;
+        for (const auto &[begin_key, val] : random_output)
+        {
+            std::cout << begin_key << " " << val << std::endl;
+        }
+        std::cout << std::endl;
+        std::cout << "Random input:" << std::endl;
+        auto random_input = Generate_Random_Input(random_output);
+        // insert into map
+        block_map<int, char> bm('A');
+        for (const auto &[begin_key, end_key, val] : random_input)
+        {
+            bm.assign(begin_key, end_key, val);
+            std::cout << begin_key << " " << end_key << " " << val << std::endl;
+        }
+
+        // check
+        for (size_t i = 1; i < random_output.size(); i++)
+        {
+            const auto &[prev_key, prev_val] = random_output[i-1];
+            const auto &[cur_key, cur_val] = random_output[i];
+
+            for (int j = prev_key; j < cur_key; j++)
+            {
+                if (bm[j] != prev_val)
+                {
+                    std::cout << "Error expected: " << prev_val
+                              << " in index: " << j
+                              << " but get: " << bm[j] << std::endl;
+                    is_found_error = true;
+                    break;
+                }
+            }
+            if (is_found_error)
+                break;
+        }
+        if (is_found_error)
+        {
+            std::cout << std::endl;
+            std::cout << "Final we get:" << std::endl;
+            bm.print();
+        }
+    }
+}
+
 \end{Code}
