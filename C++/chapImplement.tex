@@ -2,6 +2,29 @@
 這類題目不考特定的算法，純粹考察寫代碼的熟練度。
 \newline
 
+Gerneral approach for software implementation. Please refer to the example \textbf{Interval Map}
+\begin{itemize}
+  \item List out all the inputs with categories
+  \begin{itemize}
+    \item How to list out the categories? Usually that will be a mix of bottom to top and top to bottom approach, list out some inputs that are easy to observe and then pick their common factors. Then use set theory to explore all the possibilities of that factor.
+    \begin{itemize}
+      \item an input that is longer than 10
+      \item an input that is short than 10
+      \item an input that is equal to 10
+    \end{itemize}
+    \item if there are too many categories, try to change the input format so that you can merge different categories into the same one in order to reduce the number of types
+    \item it is important to reduce the number of categories. you can resolve one category by one implementation so the number of categories will increase your time of coding
+  \end{itemize}
+  \item List out the output of the corresponding input category
+  \item Think about the implementation --- language independently
+  \begin{itemize}
+    \item There could be multiple steps within the implementation, try to seperate them if they are related to each other.
+    \item The aim is to reduce the number of entanglement.
+  \end{itemize}
+  \item Prepare auto test cases --- random generation is preferred
+  \item Implement and test your code. It will be very helpful if you can implement a random test case especially for questions that are related to boundaries like the one \textbf{Interval Map}
+\end{itemize}
+
 
 \section{Reverse Integer} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:reverse-integer}
