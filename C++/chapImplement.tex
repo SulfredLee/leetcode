@@ -1740,8 +1740,10 @@ Value type --- V
 The first attempt I did was list out all the possible cases for the interval insertion. This is a top to bottom approach. The cases are included but not limited to:
 
 \begin{Code}
-for c_1 in ["new intervale is bigger / equal / smaller than the entire group of intervals in the map"]:
-    for c_2 in ["c_1 is before / one leg overlap / two legs overlap / after the group of intervals in the map"]:
+for c_1 in ["new intervale is bigger / equal\
+              / smaller than the entire group of intervals in the map"]:
+    for c_2 in ["c_1 is before / one leg overlap\
+                 / two legs overlap / after the group of intervals in the map"]:
         for c_3 in ["is the new interval touch the boundary?"]:
 \end{Code}
 
