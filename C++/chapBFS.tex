@@ -39,6 +39,70 @@ Note:
 \subsubsection{分析}
 求最短路徑，用廣搜。
 
+\subsubsection{Tackle}
+\begin{itemize}
+  \item Input types
+  \begin{itemize}
+    \item categories
+    \begin{itemize}
+      \item valid, invalid
+      \item with answer, without answer
+    \end{itemize}
+    \begin{itemize}
+      \item valid, with answer
+      \begin{Code}
+start = "hit"
+end = "cog"
+dict = ["hot","dot","dog","lot","log","cog"]
+      \end{Code}
+      \item valid, without answer
+      \begin{Code}
+start = "hit"
+end = "cog"
+dict = ["hot","dot","dog","lot","log"]
+      \end{Code}
+      \item invalid   
+      \begin{Code}
+start = "hitjj"
+end = "cogkkkhgg"
+dict = ["hot","dot","dog","lot","log"]
+      \end{Code}   
+    \end{itemize}
+    \item We have 3 cases finally, which can be handle by one implementation. This is doable and we can go to the next step.
+  \end{itemize}
+  \item Algo type? BFS, shortest path search
+  \item Test case
+  \begin{itemize}
+    \item input: start_word, end_word, additional words
+    \item output: dict, expected steps
+    \item Algo steps
+    \begin{itemize}
+      \item Generate a word ladder from start to end --- mob ~> cob ~> cab ~> cap
+      \item Generate additional words by random
+      \item Output both valid test input with both with and without answer
+    \end{itemize}
+  \end{itemize}
+  \item Algo steps
+  \begin{itemize}
+    \item Invalid input case
+    \begin{itemize}
+      \item Confirm start, end can be found from the dict
+    \end{itemize}
+    \item Valid with answer, valid without answer cases
+    \begin{itemize}
+      \item Use BFS template with 2 queue
+      \item Expand stage
+      \item Push to next level, only push when that is \textbf{the first time} we saw the word
+      \item Loop until we found answer or no more next level
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=150pt]{word-ladder.png}\\
+\figcaption{Word Ladder - Expand stage}\label{fig:word-ladder}
+\end{center}
+
 
 \subsubsection{單隊列}
 \begin{Code}

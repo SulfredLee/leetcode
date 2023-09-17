@@ -1,0 +1,52 @@
+@startuml word_ladder
+
+skinparam backgroundColor #EEEBDC
+skinparam handwritten true
+left to right direction
+
+usecase "mod" as start_word
+rectangle i=1 {
+    usecase "aod" as aod
+    usecase "..." as other_1
+    usecase "zod" as zod
+}
+rectangle i=2 {
+    usecase "mad" as mad
+    usecase "..." as other_2
+    usecase "mzd" as mzd
+}
+rectangle i=3 {
+    usecase "moa" as moa
+    usecase "..." as other_3
+    usecase "moz" as moz
+}
+usecase "filter by dictionary" as f_dict
+usecase "filter by seen" as f_seen
+usecase "push to next level" as next_level
+
+start_word --> aod
+start_word --> other_1
+start_word --> zod
+
+start_word --> mad
+start_word --> other_2
+start_word --> mzd
+
+start_word --> moa
+start_word --> other_3
+start_word --> moz
+
+aod --> f_dict
+other_1 --> f_dict
+zod --> f_dict
+mad --> f_dict
+other_2 --> f_dict
+mzd --> f_dict
+moa --> f_dict
+other_3 --> f_dict
+moz --> f_dict
+
+f_dict --> f_seen
+f_seen --> next_level
+
+@enduml
