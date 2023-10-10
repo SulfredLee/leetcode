@@ -697,14 +697,21 @@ Given a binary tree
           1
          / \
         2   3
-       / \     
-      4   5    
+       / \
+      4   5
 
-Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
-
-Note: The length of path between two nodes is represented by the number of edges between them.
 \end{Code}
+Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].\\
+Note: The length of path between two nodes is represented by the number of edges between them.
 
+
+\begin{center}
+  \includegraphics[width=300pt]{diameter-of-binary-tree.png}\\
+  \figcaption{Diameter Of Binary Tree}\label{fig:diameter-of-binary-tree}
+\end{center}
+
+Example of binary tree that no root node included.\\
+Return 10, which is length of the path [24, 21, 15, 10, 6, 3, 7, 13, 18, 23, 26] or [25, 21, 15, 10, 6, 3, 7, 13, 18, 23, 26]
 
 \subsubsection{遞歸}
 \begin{Code}
@@ -755,7 +762,7 @@ According to the example above:
 \begin{Code}
 equations = [ ["a", "b"], ["b", "c"] ],
 values = [2.0, 3.0],
-queries = [ ["a", "c"], ["b", "a"], ["a", "e"], ["a", "a"], ["x", "x"] ]. 
+queries = [ ["a", "c"], ["b", "a"], ["a", "e"], ["a", "a"], ["x", "x"] ].
 \end{Code}
 
 The input is always valid. You may assume that evaluating the queries will result in no division by zero and there is no contradiction.
@@ -1108,7 +1115,7 @@ Each word must be constructed from letters of sequentially adjacent cell, where 
 
 Example:
 \begin{Code}
-Input: 
+Input:
 board = [
   ['o','a','a','n'],
   ['e','t','a','e'],
@@ -1628,7 +1635,7 @@ private:
         // 若果是大斜角走，要先檢查居中下標
         int mid = (index + last) / 2;
         if (mid == 4) return used[mid];
-        // 處理鄰近斜角移動
+        // 處理鄰近斜角移動 --- (not same col) and (not same row)
         if ((index % 3 != last % 3) && (index / 3 != last / 3))
             return true;
         // 剩下的移動選擇都不是相鄰的
@@ -1713,7 +1720,7 @@ private:
         // 若果是大斜角走，要先檢查居中下標
         int mid = (index + last) / 2;
         if (mid == 4) return used & 1 << mid;
-        // 處理鄰近斜角移動
+        // 處理鄰近斜角移動 --- (not same col) and (not same row)
         if ((index % 3 != last % 3) && (index / 3 != last / 3))
             return true;
         // 剩下的移動選擇都不是相鄰的
@@ -1832,7 +1839,7 @@ You are given an integer array nums and you have to return a new counts array. T
 Example:
 \begin{Code}
 Input: [5,2,6,1]
-Output: [2,1,1,0] 
+Output: [2,1,1,0]
 Explanation:
 To the right of 5 there are 2 smaller elements (2 and 1).
 To the right of 2 there is only 1 smaller element (1).
@@ -1914,7 +1921,7 @@ You are given coins of different denominations and a total amount of money amoun
 Example 1:
 \begin{Code}
 Input: coins = [1, 2, 5], amount = 11
-Output: 3 
+Output: 3
 Explanation: 11 = 5 + 5 + 1
 \end{Code}
 
@@ -2276,7 +2283,7 @@ private:
 \subsubsection{描述}
 You are playing the following Bulls and Cows game with your friend: You write down a number and ask your friend to guess what the number is. Each time your friend makes a guess, you provide a hint that indicates how many digits in said guess match your secret number exactly in both digit and position (called "bulls") and how many digits match the secret number but locate in the wrong position (called "cows"). Your friend will use successive guesses and hints to eventually derive the secret number.
 
-Write a function to return a hint according to the secret number and friend's guess, use A to indicate the bulls and B to indicate the cows. 
+Write a function to return a hint according to the secret number and friend's guess, use A to indicate the bulls and B to indicate the cows.
 
 Please note that both secret number and friend's guess may contain duplicate digits.
 
