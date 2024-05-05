@@ -43,6 +43,7 @@ Java 文件夾下是Java版，目前正在編寫中，由於拖延症，不知�
 ```Bash
 $ sudo apt-get install texmaker texlive-lang-chinese texlive-luatex texlive-xetex ttf-mscorefonts-installer font-manager
 $ sudo apt-get install texlive-fonts-extra
+$ sudo apt-get install texlive-bibtex-extra biber
 ```
 - download needed font from [fonts market](https://www.fontsmarket.com)
   - AdobeFangsongStd-Regular.otf - [Adobe Fangsong Std R](https://www.fontsmarket.com/font-download/adobe-fangsong-std-r)
