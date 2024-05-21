@@ -38,7 +38,7 @@ Java 文件夾下是Java版，目前正在編寫中，由於拖延症，不知�
 
     在下方的窗口可以看到TeXstudio正在使用的編譯命令是`xelatex -synctex=1 -interaction=nonstopmode "typeset".tex`
 
-## 在Ubuntu 20.04 下編譯
+## 在Ubuntu 20.04 or 24.04 下編譯
 - install package
 ```Bash
 $ sudo apt-get install texmaker texlive-lang-chinese texlive-luatex texlive-xetex ttf-mscorefonts-installer font-manager
